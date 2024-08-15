@@ -1,4 +1,6 @@
+import { MovieDetails } from "@/components/MovieDetails";
 import { MovieScrollList } from "@/components/MovieItem";
+import { SelectedMovieProvider } from "@/contexts/selectedMovieContext/SelectedMovieProvider";
 import { Grid, Paper, styled } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -16,14 +18,18 @@ export const MovieListing = () => {
         <Grid item xs={12} height={"90px"}>
           <Item>xs=12</Item>
         </Grid>
-        <Grid item xs={4} height={"600px"}>
-          <Item>
-            <MovieScrollList />
-          </Item>
-        </Grid>
-        <Grid item xs={8}>
-          <Item>xs=8</Item>
-        </Grid>
+        <SelectedMovieProvider>
+          <Grid item xs={4} height={"600px"}>
+            <Item>
+              <MovieScrollList />
+            </Item>
+          </Grid>
+          <Grid item xs={8}>
+            <Item>
+              <MovieDetails />
+            </Item>
+          </Grid>
+        </SelectedMovieProvider>
       </Grid>
     </>
   );

@@ -1,6 +1,7 @@
 import { Box, Card } from "@mui/material";
 import { MovieDisplayCard } from "./MovieDisplayCard";
 import { OmdMovieItem } from "@/types";
+import { useSelectedMovie } from "@/contexts/selectedMovieContext/useSelectedMovie";
 
 export const MovieScrollList = () => {
   const { totalResults, Search: movieItems } = {
@@ -88,6 +89,8 @@ export const MovieScrollList = () => {
       },
     ],
   };
+  const { selectedImdbID, setSelectedImdbID } = useSelectedMovie();
+
   return (
     <>
       <Box height={"100%"} overflow={"auto"}>
@@ -98,10 +101,10 @@ export const MovieScrollList = () => {
           return (
             <MovieDisplayCard
               movieItem={movieItem as OmdMovieItem}
-              selected={movieItem.imdbID === "tt0145487"}
+              selected={movieItem.imdbID === selectedImdbID}
               key={movieItem.imdbID}
               onClick={() => {
-                console.log("select this", movieItem.imdbID);
+                setSelectedImdbID(movieItem.imdbID);
               }}
             />
           );
