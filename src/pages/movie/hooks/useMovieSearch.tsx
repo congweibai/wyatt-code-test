@@ -1,30 +1,7 @@
 import { useCallback, useState } from "react";
 import { OMD_API_KEY, OMD_BASE_URL } from "@/constants";
 import axios, { AxiosResponse } from "axios";
-
-type MovieType = "movie" | "series" | "episode";
-
-type OmdParams = {
-  apiKey: string;
-  s: string;
-  y?: number;
-  type?: MovieType;
-};
-
-type OmdMovieItem = {
-  Title: string;
-  Year: string;
-  imdbID: string;
-  Type: MovieType;
-  Poster: string;
-};
-
-type OmdResponse = {
-  totalResults: string;
-  Response: string;
-  Search: OmdMovieItem[];
-  Error?: string;
-};
+import { MovieType, OmdParams, OmdResponse } from "@/types";
 
 type MovieSearchInput = {
   title: string;
