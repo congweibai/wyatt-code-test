@@ -1,47 +1,38 @@
 import { useCallback, useState } from "react";
 import { OMD_API_KEY, OMD_BASE_URL } from "@/constants";
 import axios, { AxiosResponse } from "axios";
-import { MovieType, OmdSearchParams, OmdSearchResponse } from "@/types";
+import { OmdDetailParams, OmdDetailResponse } from "@/types";
 
-type MovieSearchInput = {
-  title: string;
-  // TO DO: comfirm year range search, design is a range but api only support single year
-  year?: number;
-  type?: MovieType;
+type MovieDetailInput = {
+  imdbID: string;
 };
 
-export const useMovieSearch = () => {
+export const useMovieDetail = () => {
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<OmdSearchResponse | null>(null);
+  const [response, setResponse] = useState<OmdDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   if (!OMD_API_KEY) {
     console.error("No OMD API been found");
-    return { loading, response, error, getMovieList: () => {} };
+    return { loading, response, error, getMovieDetail: () => {} };
   }
 
-  const getMovieList = useCallback(async (input: MovieSearchInput) => {
-    const { title, year, type } = input;
-    const params: OmdSearchParams = { apiKey: OMD_API_KEY, s: title };
-    if (year) {
-      params.y = year;
-    }
-    if (type) {
-      params.type = type;
-    }
+  const getMovieDetail = useCallback(async (input: MovieDetailInput) => {
+    const { imdbID } = input;
+    const params: OmdDetailParams = { apiKey: OMD_API_KEY, i: imdbID };
 
     setLoading(true);
     setError(null);
     setResponse(null);
 
     try {
-      const response: AxiosResponse<OmdSearchResponse> = await axios.get(
+      const response: AxiosResponse<OmdDetailResponse> = await axios.get(
         OMD_BASE_URL,
         {
           params,
         }
       );
-      const data: OmdSearchResponse = response.data;
+      const data: OmdDetailResponse = response.data;
 
       if (data.Response === "True") {
         setResponse(data);
@@ -60,6 +51,6 @@ export const useMovieSearch = () => {
     loading,
     response,
     error,
-    getMovieList,
+    getMovieDetail,
   };
 };
