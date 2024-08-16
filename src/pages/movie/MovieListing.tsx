@@ -36,7 +36,7 @@ export const MovieListing = () => {
         type: currentFilter.type !== "any" ? currentFilter.type : "",
         page: page,
       });
-  }, [page, currentFilter, getMovieList]);
+  }, [page, currentFilter]);
 
   return (
     <>
