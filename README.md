@@ -2,6 +2,10 @@
 
 Wyatt Aligent code test
 
+# Live demo
+
+You can view the live demo of the project [here](https://wyatt-aligent-code-test.vercel.app/).
+
 ## Prepare
 
 Node Version: v20.16.0
