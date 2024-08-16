@@ -6,8 +6,8 @@ import {
 import { MovieScrollList } from "@/components/MovieItem";
 import { SelectedMovieProvider } from "@/contexts/selectedMovieContext/SelectedMovieProvider";
 import { Grid, Paper, styled } from "@mui/material";
-import { useMovieSearch } from "./hooks";
-import { useCallback } from "react";
+import { useMovieSearch } from "@/pages/movie/hooks";
+import { useCallback, useEffect, useState } from "react";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -18,25 +18,32 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export const MovieListing = () => {
+  const [page, setPage] = useState(1);
+  const [currentFilter, setCurrentFilter] = useState<MovieFilterInputs>();
+
   const { loading, response, getMovieList } = useMovieSearch();
 
-  const handleSearch = useCallback(
-    (inputs: MovieFilterInputs) => {
+  const handleFilterChange = useCallback((inputs: MovieFilterInputs) => {
+    setCurrentFilter(inputs);
+    setPage(1);
+  }, []);
+
+  useEffect(() => {
+    if (currentFilter)
       getMovieList({
-        title: inputs.title,
-        year: inputs.year ?? inputs.year,
-        type: inputs.type !== "any" ? inputs.type : "",
+        title: currentFilter.title,
+        year: currentFilter.year ?? currentFilter.year,
+        type: currentFilter.type !== "any" ? currentFilter.type : "",
+        page: page,
       });
-    },
-    [getMovieList]
-  );
+  }, [page, currentFilter, getMovieList]);
 
   return (
     <>
       <Grid container spacing={0}>
         <Grid item xs={12} height={"90px"}>
           <Item>
-            <MovieFilterForm handleSearch={handleSearch} />
+            <MovieFilterForm handleFilterChange={handleFilterChange} />
           </Item>
         </Grid>
         <SelectedMovieProvider>
@@ -46,6 +53,7 @@ export const MovieListing = () => {
                 totalResults={response?.totalResults || "0"}
                 movieItems={response?.Search || []}
                 loading={loading}
+                onLoadmore={() => setPage((currentPage) => currentPage + 1)}
               />
             </Item>
           </Grid>

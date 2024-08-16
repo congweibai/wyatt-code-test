@@ -19,14 +19,16 @@ import { getMovieRangeEndYear, getMovieRangeStartYear } from "./utils";
 import { MovieFilterInputs } from "./types";
 
 type MovieFilterFormProps = {
-  handleSearch: (inputs: MovieFilterInputs) => void;
+  handleFilterChange: (inputs: MovieFilterInputs) => void;
 };
 
-export const MovieFilterForm = ({ handleSearch }: MovieFilterFormProps) => {
+export const MovieFilterForm = ({
+  handleFilterChange,
+}: MovieFilterFormProps) => {
   const { register, handleSubmit, control } = useForm<MovieFilterInputs>();
 
   const onSubmit: SubmitHandler<MovieFilterInputs> = (data) =>
-    handleSearch(data);
+    handleFilterChange(data);
 
   return (
     <>

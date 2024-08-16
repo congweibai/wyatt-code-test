@@ -19,6 +19,7 @@ export type OmdSearchParams = {
   s: string;
   y?: number;
   type?: MovieType;
+  page: number;
 };
 
 export type OmdDetailParams = {
