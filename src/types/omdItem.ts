@@ -1,4 +1,18 @@
-export type MovieType = "movie" | "series" | "episode";
+export type MovieType = "movie" | "series" | "episode" | "any";
+
+export enum MovieTypeValue {
+  ANY = "any",
+  MOVIE = "movie",
+  SERIES = "series",
+  EPISODE = "episode",
+}
+
+export enum MovieLabelValue {
+  ANY = "Any",
+  MOVIE = "Movies",
+  SERIES = "Series",
+  EPISODE = "Episodes",
+}
 
 export type OmdSearchParams = {
   apiKey: string;

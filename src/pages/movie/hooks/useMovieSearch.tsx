@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { OMD_API_KEY, OMD_BASE_URL } from "@/constants";
 import axios, { AxiosResponse } from "axios";
 import { MovieType, OmdSearchParams, OmdSearchResponse } from "@/types";
@@ -7,7 +7,7 @@ type MovieSearchInput = {
   title: string;
   // TO DO: comfirm year range search, design is a range but api only support single year
   year?: number;
-  type?: MovieType;
+  type?: MovieType | "";
 };
 
 export const useMovieSearch = () => {
@@ -20,7 +20,7 @@ export const useMovieSearch = () => {
     return { loading, response, error, getMovieList: () => {} };
   }
 
-  const getMovieList = useCallback(async (input: MovieSearchInput) => {
+  const getMovieList = async (input: MovieSearchInput) => {
     const { title, year, type } = input;
     const params: OmdSearchParams = { apiKey: OMD_API_KEY, s: title };
     if (year) {
@@ -54,7 +54,7 @@ export const useMovieSearch = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   return {
     loading,
