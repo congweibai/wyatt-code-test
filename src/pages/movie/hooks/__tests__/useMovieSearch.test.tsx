@@ -27,6 +27,7 @@ describe("useMovieSearch", () => {
           title: "Inception",
           year: 2010,
           type: "movie",
+          page: 1,
         });
       });
 
@@ -39,6 +40,7 @@ describe("useMovieSearch", () => {
           s: "Inception",
           y: 2010,
           type: "movie",
+          page: 1,
         },
       });
       expect(result.current.response).toBe(null);
@@ -111,6 +113,7 @@ describe("useMovieSearch", () => {
           title: "Spider",
           year: 2010,
           type: "movie",
+          page: 1,
         });
       });
 
@@ -123,9 +126,108 @@ describe("useMovieSearch", () => {
           s: "Spider",
           type: "movie",
           y: 2010,
+          page: 1,
         },
       });
       expect(result.current.response).toEqual(mockResponse);
+      expect(result.current.error).toBe(null);
+    });
+
+    it("should combine results when page is greater than 1 with successful API response", async () => {
+      // mock
+      vi.spyOn(constants, "OMD_API_KEY", "get").mockReturnValue("123456");
+      vi.spyOn(constants, "OMD_BASE_URL", "get").mockReturnValue(
+        "http://www.omdbapi.com"
+      );
+
+      const mockResponse = {
+        totalResults: "2",
+        Response: "True",
+        Search: [
+          {
+            Title: "Peter Parker es Spider-Man",
+            Year: "2010",
+            imdbID: "tt8085826",
+            Type: "movie",
+            Poster:
+              "https://m.media-amazon.com/images/M/MV5BZjFjYzk2NzgtODU5Yy00Y2NlLWE2YTQtZmRiOGU4NmIwY2UzXkEyXkFqcGdeQXVyMTkwMDgzODc@._V1_SX300.jpg",
+          },
+        ],
+      };
+
+      const mockSecondResponse = {
+        totalResults: "2",
+        Response: "True",
+        Search: [
+          {
+            Title: "Spider in the Web",
+            Year: "2019",
+            imdbID: "tt7942736",
+            Type: "movie",
+            Poster:
+              "https://m.media-amazon.com/images/M/MV5BNzcwMGU3MDAtYzEzZi00OWIyLTgzMDMtNGQ3NTY3OGE2ZDIwXkEyXkFqcGdeQXVyNDMzNDc4Mg@@._V1_SX300.jpg",
+          },
+        ],
+      };
+
+      (mockedAxios.get as Mock)
+        .mockResolvedValueOnce({ data: mockResponse })
+        .mockResolvedValueOnce({ data: mockSecondResponse });
+
+      // act
+      const { result } = renderHook(() => useMovieSearch());
+
+      act(() => {
+        result.current.getMovieList({
+          title: "Spider",
+          year: 2010,
+          type: "movie",
+          page: 1,
+        });
+      });
+
+      act(() => {
+        result.current.getMovieList({
+          title: "Spider",
+          year: 2010,
+          type: "movie",
+          page: 2,
+        });
+      });
+
+      // assert
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      expect(mockedAxios.get).toBeCalledTimes(2);
+      expect(mockedAxios.get).toHaveBeenNthCalledWith(
+        1,
+        "http://www.omdbapi.com",
+        {
+          params: {
+            apiKey: "123456",
+            s: "Spider",
+            type: "movie",
+            y: 2010,
+            page: 1,
+          },
+        }
+      );
+      expect(mockedAxios.get).toHaveBeenNthCalledWith(
+        2,
+        "http://www.omdbapi.com",
+        {
+          params: {
+            apiKey: "123456",
+            s: "Spider",
+            type: "movie",
+            y: 2010,
+            page: 2,
+          },
+        }
+      );
+      expect(result.current.response).toEqual({
+        ...mockSecondResponse,
+        Search: [...mockResponse.Search, ...mockSecondResponse.Search],
+      });
       expect(result.current.error).toBe(null);
     });
   });

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { MovieFilterForm } from "../MovieFilterForm";
 import userEvent from "@testing-library/user-event";
 
-const mockHandleSearch = vi.fn();
+const mockHandleFilterChange = vi.fn();
 
 describe("MovieFilterForm", () => {
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe("MovieFilterForm", () => {
   });
 
   it("should render the form correctly", () => {
-    render(<MovieFilterForm handleSearch={mockHandleSearch} />);
+    render(<MovieFilterForm handleFilterChange={mockHandleFilterChange} />);
 
     const searchInput = screen.getByPlaceholderText("Search Movies");
     expect(searchInput).toBeInTheDocument();
@@ -28,17 +28,17 @@ describe("MovieFilterForm", () => {
   });
 
   it("should prevent form submission on Enter key press in input field", async () => {
-    render(<MovieFilterForm handleSearch={mockHandleSearch} />);
+    render(<MovieFilterForm handleFilterChange={mockHandleFilterChange} />);
 
     const input = screen.getByPlaceholderText("Search Movies");
     const user = userEvent.setup();
     await user.type(input, "Inception{enter}");
 
-    expect(mockHandleSearch).not.toHaveBeenCalled();
+    expect(mockHandleFilterChange).not.toHaveBeenCalled();
   });
 
-  it("should handleSearch with correct data on submit", async () => {
-    render(<MovieFilterForm handleSearch={mockHandleSearch} />);
+  it("should handleFilterChange with correct data on submit", async () => {
+    render(<MovieFilterForm handleFilterChange={mockHandleFilterChange} />);
 
     const input = screen.getByPlaceholderText("Search Movies");
     const user = userEvent.setup();
@@ -50,7 +50,7 @@ describe("MovieFilterForm", () => {
     await user.click(screen.getByRole("button", { name: /search/i }));
 
     await waitFor(() => {
-      expect(mockHandleSearch).toHaveBeenCalledWith({
+      expect(mockHandleFilterChange).toHaveBeenCalledWith({
         title: "test movie",
         type: "movie",
       });

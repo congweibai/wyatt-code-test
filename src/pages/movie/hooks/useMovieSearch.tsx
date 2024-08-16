@@ -8,6 +8,7 @@ type MovieSearchInput = {
   // TO DO: comfirm year range search, design is a range but api only support single year
   year?: number;
   type?: MovieType | "";
+  page: number;
 };
 
 export const useMovieSearch = () => {
@@ -21,8 +22,8 @@ export const useMovieSearch = () => {
   }
 
   const getMovieList = async (input: MovieSearchInput) => {
-    const { title, year, type } = input;
-    const params: OmdSearchParams = { apiKey: OMD_API_KEY, s: title };
+    const { title, year, type, page } = input;
+    const params: OmdSearchParams = { apiKey: OMD_API_KEY, s: title, page };
     if (year) {
       params.y = year;
     }
@@ -32,7 +33,7 @@ export const useMovieSearch = () => {
 
     setLoading(true);
     setError(null);
-    setResponse(null);
+    if (page === 1) setResponse(null);
 
     try {
       const response: AxiosResponse<OmdSearchResponse> = await axios.get(
@@ -44,7 +45,20 @@ export const useMovieSearch = () => {
       const data: OmdSearchResponse = response.data;
 
       if (data.Response === "True") {
-        setResponse(data);
+        setResponse((currentData) => {
+          if (params.page > 1) {
+            console.log(">1", {
+              ...data,
+              Search: [...(currentData?.Search || []), ...data.Search],
+            });
+            return {
+              ...data,
+              Search: [...(currentData?.Search || []), ...data.Search],
+            };
+          } else {
+            return data;
+          }
+        });
       } else {
         setError(data.Error || "No results found.");
       }
