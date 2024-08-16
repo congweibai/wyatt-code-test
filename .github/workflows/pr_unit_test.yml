@@ -26,4 +26,9 @@ jobs:
         if: steps.cache-modules.outputs.cache-hit != 'true'
         run: npm install
       - name: Run test
-        run: npm test
+        run: npm test -- run --coverage
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ./coverage

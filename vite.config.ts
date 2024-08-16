@@ -9,6 +9,9 @@ export default defineConfig({
     // hey! 👋 over here
     globals: true,
     setupFiles: "./setupTest.ts",
+    coverage: {
+      reporter: ["text", "json", "html"],
+    },
   },
   resolve: {
     alias: {
