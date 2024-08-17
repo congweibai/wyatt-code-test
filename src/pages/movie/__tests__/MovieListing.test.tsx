@@ -1,13 +1,22 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, Mock, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { MovieListing } from "../MovieListing";
-import { useMovieDetail, useMovieSearch } from "../hooks";
+import { useMovieDetail, useMovieSearch, useMovieWatchlist } from "../hooks";
 import { useSelectedMovie } from "@/contexts/selectedMovieContext/useSelectedMovie";
 
 vi.mock("@/contexts/selectedMovieContext/useSelectedMovie");
 vi.mock("@/pages/movie/hooks");
 
 describe("MovieListing", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    (useMovieWatchlist as Mock).mockReturnValue({
+      isInWatchList: false,
+      addToWatchList: vi.fn(),
+      removeFromWatchList: vi.fn(),
+      loading: false,
+    });
+  });
   it("should render defult page view when no search happened nad nothing is selected", () => {
     // mock
     (useMovieSearch as Mock).mockReturnValue({
