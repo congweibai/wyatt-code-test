@@ -1,5 +1,5 @@
 import { useSelectedMovie } from "@/contexts/selectedMovieContext/useSelectedMovie";
-import { useMovieDetail } from "@/pages/movie/hooks";
+import { useMovieDetail, useMovieWatchlist } from "@/pages/movie/hooks";
 import {
   Box,
   Button,
@@ -17,6 +17,12 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 export const MovieDetails = () => {
   const { selectedImdbID } = useSelectedMovie();
+  const {
+    isInWatchList,
+    addToWatchList,
+    removeFromWatchList,
+    loading: isLoadingWatchList,
+  } = useMovieWatchlist(selectedImdbID);
 
   const { loading, response, getMovieDetail } = useMovieDetail();
 
@@ -63,14 +69,27 @@ export const MovieDetails = () => {
                 padding: "0px 25px",
               }}
             >
-              <Button
-                startIcon={<BookmarkBorderIcon />}
-                disabled
-                variant='outlined'
-                size='large'
-              >
-                Watchlist
-              </Button>
+              {isInWatchList ? (
+                <Button
+                  startIcon={<BookmarkBorderIcon />}
+                  variant='outlined'
+                  size='large'
+                  onClick={removeFromWatchList}
+                  disabled={isLoadingWatchList}
+                >
+                  Remove
+                </Button>
+              ) : (
+                <Button
+                  startIcon={<BookmarkBorderIcon />}
+                  variant='outlined'
+                  size='large'
+                  onClick={addToWatchList}
+                  disabled={isLoadingWatchList}
+                >
+                  Watchlist
+                </Button>
+              )}
             </Box>
             <Box>
               <Typography
