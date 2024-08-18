@@ -32,9 +32,9 @@ export const MovieDetails = () => {
 
   if (loading)
     return (
-      <Box sx={{ display: "flex" }}>
-        <CircularProgress />
-      </Box>
+      <Stack alignItems='center' paddingTop='20px'>
+        <CircularProgress size={50} />
+      </Stack>
     );
 
   if (!selectedImdbID) return <>Please select movie to view detail</>;

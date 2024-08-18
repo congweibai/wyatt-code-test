@@ -1,4 +1,4 @@
-import { Box, Card, CircularProgress } from "@mui/material";
+import { Box, Card, CircularProgress, Typography } from "@mui/material";
 import { MovieDisplayCard } from "./MovieDisplayCard";
 import { OmdMovieItem } from "@/types";
 import { useSelectedMovie } from "@/contexts/selectedMovieContext/useSelectedMovie";
@@ -35,9 +35,13 @@ export const MovieScrollList = ({
         ref={containerRef}
         data-testid='scroll-container'
       >
-        <Card sx={{ height: "80px", fontSize: "18px", padding: "3px" }}>
-          {totalResults} RESULTS
-        </Card>
+        {totalResults !== "empty" ? (
+          <Card sx={{ height: "80px", fontSize: "18px", padding: "3px" }}>
+            {totalResults} RESULTS
+          </Card>
+        ) : (
+          <Typography>Please start search</Typography>
+        )}
         {movieItems.map((movieItem) => {
           return (
             <MovieDisplayCard

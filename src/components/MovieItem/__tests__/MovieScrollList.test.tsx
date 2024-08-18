@@ -143,4 +143,20 @@ describe("MovieScrollList", () => {
     // Assert that onLoadmore is not triggered when not scrolled to the bottom
     expect(mockOnLoadmore).not.toHaveBeenCalled();
   });
+
+  it("should display message when there is no totalResults", () => {
+    // mock
+    render(
+      <MovieScrollList
+        totalResults='empty'
+        movieItems={[]}
+        loading={false}
+        onLoadmore={vi.fn()}
+      />
+    );
+
+    // assert
+    const pleaseSearchText = screen.getByText("Please start search");
+    expect(pleaseSearchText).toBeInTheDocument();
+  });
 });
