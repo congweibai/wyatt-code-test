@@ -1,14 +1,22 @@
-# wyatt-aligent-code-tes
+# wyatt-code-test
 
-Wyatt Aligent code test
+Wyatt code test
 
 # Live demo
 
-You can view the live demo of the project [here](https://wyatt-aligent-code-test.vercel.app/).
+You can view the live demo of the project [here](https://wyatt-code-test.vercel.app/).
 
 ## Prepare
 
 Node Version: v20.16.0
+
+### Setup environment variables for local env
+
+```
+cp .env.example .env
+```
+
+Note you need get OMD_API_KEY key from https://www.omdbapi.com/
 
 ## Commands
 

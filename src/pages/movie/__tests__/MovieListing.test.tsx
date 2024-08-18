@@ -17,6 +17,36 @@ describe("MovieListing", () => {
       loading: false,
     });
   });
+
+  it("should show error text if there is search error", () => {
+    // mock
+    (useMovieSearch as Mock).mockReturnValue({
+      loading: false,
+      response: null,
+      getMovieDetail: vi.fn(),
+      error: "Movie not found!",
+    });
+    (useSelectedMovie as Mock).mockReturnValue({
+      selectedImdbID: "",
+    });
+    (useMovieDetail as Mock).mockReturnValue({
+      loading: false,
+      response: null,
+      getMovieDetail: vi.fn(),
+    });
+
+    // act
+    render(<MovieListing />);
+
+    // assert
+
+    const errorMessage = screen.getByText(/Movie not found!/);
+    expect(errorMessage).toBeVisible();
+
+    const errorActionMessage = screen.getByText("Please try again.");
+    expect(errorActionMessage).toBeVisible();
+  });
+
   it("should render defult page view when no search happened nad nothing is selected", () => {
     // mock
     (useMovieSearch as Mock).mockReturnValue({
@@ -40,7 +70,7 @@ describe("MovieListing", () => {
     const filterParts = screen.getByPlaceholderText("Search Movies");
     expect(filterParts).toBeVisible();
 
-    const listingParts = screen.getByText("0 RESULTS");
+    const listingParts = screen.getByText("Please start search");
     expect(listingParts).toBeVisible();
 
     const detailParts = screen.getByText(/Please select movie to view detail/);
