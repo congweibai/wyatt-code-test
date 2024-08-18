@@ -31,42 +31,47 @@ export const useMovieSearch = () => {
       params.type = type;
     }
 
-    setLoading(true);
-    setError(null);
     if (page === 1) setResponse(null);
 
-    try {
-      const response: AxiosResponse<OmdSearchResponse> = await axios.get(
-        OMD_BASE_URL,
-        {
-          params,
-        }
-      );
-      const data: OmdSearchResponse = response.data;
+    const totalResults = parseInt(response?.totalResults || "0");
+    // only request when current is less than totalResults
+    const shouldRequest =
+      page === 1 || totalResults > (response?.Search?.length ?? 0);
 
-      if (data.Response === "True") {
-        setResponse((currentData) => {
-          if (params.page > 1) {
-            console.log(">1", {
-              ...data,
-              Search: [...(currentData?.Search || []), ...data.Search],
-            });
-            return {
-              ...data,
-              Search: [...(currentData?.Search || []), ...data.Search],
-            };
-          } else {
-            return data;
+    if (shouldRequest) {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response: AxiosResponse<OmdSearchResponse> = await axios.get(
+          OMD_BASE_URL,
+          {
+            params,
           }
-        });
-      } else {
-        setError(data.Error || "No results found.");
+        );
+        const data: OmdSearchResponse = response.data;
+
+        if (data.Response === "True") {
+          setResponse((currentData) => {
+            if (params.page > 1) {
+              return {
+                ...data,
+                Search: [...(currentData?.Search || []), ...data.Search],
+              };
+            } else {
+              return data;
+            }
+          });
+        } else {
+          setError(data.Error || "No results found.");
+          setResponse(data);
+        }
+      } catch (error) {
+        setError("An error occurred during movie list retrieval.");
+        console.error("An error occurred during get movie list:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      setError("An error occurred during movie list retrieval.");
-      console.error("An error occurred during get movie list:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
