@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 
 const useScrollToBottom = (threshold: number = 0) => {
   const [atBottom, setAtBottom] = useState(false);
@@ -12,7 +12,7 @@ const useScrollToBottom = (threshold: number = 0) => {
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current;
 
     if (container) {
